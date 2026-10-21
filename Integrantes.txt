@@ -1,0 +1,9 @@
+Proyecto: Mis Mascotas (Flutter + Firebase + Cloudinary)
+Programación Móvil II - Práctica evaluada
+
+Integrantes:
+1. NOMBRE COMPLETO
+2. NOMBRE COMPLETO
+3. NOMBRE COMPLETO
+4. NOMBRE COMPLETO
+5. NOMBRE COMPLETO

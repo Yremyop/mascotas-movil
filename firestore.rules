@@ -1,0 +1,36 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /mascotas/{mascotaId} {
+      // Solo el dueño (uid guardado en el documento) puede leer, editar o borrar.
+      allow read, delete: if request.auth != null
+                          && resource.data.uid == request.auth.uid;
+
+      // Al crear, el documento debe llevar el uid del usuario autenticado.
+      allow create: if request.auth != null
+                    && request.resource.data.uid == request.auth.uid
+                    && datosValidos();
+
+      // Al editar, no se puede cambiar el dueño.
+      allow update: if request.auth != null
+                    && resource.data.uid == request.auth.uid
+                    && request.resource.data.uid == resource.data.uid
+                    && datosValidos();
+    }
+
+    function datosValidos() {
+      let d = request.resource.data;
+      return d.nombre is string && d.nombre.size() > 0
+          && d.especie is string && d.especie.size() > 0
+          && d.edad is int && d.edad >= 0
+          && d.imagenUrl is string
+          && d.imagenUrl.matches('https://res[.]cloudinary[.]com/.*');
+    }
+
+    // Cualquier otra colección queda cerrada.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
